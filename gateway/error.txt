@@ -1,0 +1,285 @@
+arif04@ARiF:~/eventflow/gateway$ cmake -B build -S . -DCMAKE_TOOLCHAIN_FILE=$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake -G Ninja
+-- Running vcpkg install
+Detecting compiler hash for triplet x64-linux...
+Compiler found: /usr/bin/c++
+The following packages will be built and installed:
+  * brotli:x64-linux@1.2.0
+  * c-ares:x64-linux@1.34.8
+    drogon:x64-linux@1.9.13#2
+  * jsoncpp:x64-linux@1.9.6
+  * libuuid:x64-linux@1.0.3#17
+    nlohmann-json:x64-linux@3.12.0#2
+  * openssl:x64-linux@3.6.3
+  * trantor:x64-linux@1.5.28
+  * vcpkg-cmake:x64-linux@2025-08-07
+  * vcpkg-cmake-config:x64-linux@2026-07-21
+  * vcpkg-cmake-get-vars:x64-linux@2025-05-29
+  * zlib:x64-linux@1.3.2#2
+Additional packages (*) will be modified to complete this operation.
+Restored 2 package(s) from /home/arif04/.cache/vcpkg/archives in 8.58 ms. Use --debug to see more details.
+Installing 1/12 vcpkg-cmake-config:x64-linux@2026-07-21...
+vcpkg-cmake-config:x64-linux@2026-07-21 package ABI: 71d1e977c0b03f39b91bc737d9ea847b9cebb3f1489d64d190e2c303c9fe0b24
+Elapsed time to handle vcpkg-cmake-config:x64-linux: 2.83 ms
+Installing 2/12 vcpkg-cmake:x64-linux@2025-08-07...
+vcpkg-cmake:x64-linux@2025-08-07 package ABI: b3053602609fb534170599ebdac2ed2486c53fdbd34efef67fb41cef88c81e63
+Elapsed time to handle vcpkg-cmake:x64-linux: 1.55 ms
+Installing 3/12 zlib:x64-linux@1.3.2#2...
+zlib:x64-linux@1.3.2#2 package ABI: 88ec2de437aac95a2f2e8f89a9808cafc6560e3a260b37226b7de30192e4632e
+Building zlib:x64-linux@1.3.2#2...
+Downloading https://github.com/madler/zlib/archive/v1.3.2.tar.gz -> madler-zlib-v1.3.2.tar.gz
+Successfully downloaded madler-zlib-v1.3.2.tar.gz
+-- Extracting source /home/arif04/vcpkg/downloads/madler-zlib-v1.3.2.tar.gz
+-- Applying patch 0001-no-version-script-on-ohos.patch
+-- Using source at /home/arif04/vcpkg/buildtrees/zlib/src/v1.3.2-c19a0bfd23.clean
+-- Configuring x64-linux
+-- Building x64-linux-dbg
+-- Building x64-linux-rel
+-- Fixing pkgconfig file: /home/arif04/vcpkg/packages/zlib_x64-linux/lib/pkgconfig/zlib.pc
+-- Fixing pkgconfig file: /home/arif04/vcpkg/packages/zlib_x64-linux/debug/lib/pkgconfig/zlib.pc
+-- Installing: /home/arif04/vcpkg/packages/zlib_x64-linux/share/zlib/vcpkg-cmake-wrapper.cmake
+-- Installing: /home/arif04/vcpkg/packages/zlib_x64-linux/share/zlib/copyright
+-- Performing post-build validation
+Starting submission of zlib:x64-linux@1.3.2#2 to 1 binary cache(s) in the background
+Elapsed time to handle zlib:x64-linux: 6.3 s
+Installing 4/12 vcpkg-cmake-get-vars:x64-linux@2025-05-29...
+vcpkg-cmake-get-vars:x64-linux@2025-05-29 package ABI: 097499d175136045333265b55643b905e0b4bcbdcb8312dcdd520ede5a5cd517
+Building vcpkg-cmake-get-vars:x64-linux@2025-05-29...
+-- Installing: /home/arif04/vcpkg/packages/vcpkg-cmake-get-vars_x64-linux/share/vcpkg-cmake-get-vars/vcpkg_cmake_get_vars.cmake
+-- Installing: /home/arif04/vcpkg/packages/vcpkg-cmake-get-vars_x64-linux/share/vcpkg-cmake-get-vars/cmake_get_vars
+-- Installing: /home/arif04/vcpkg/packages/vcpkg-cmake-get-vars_x64-linux/share/vcpkg-cmake-get-vars/cmake_get_vars/CMakeLists.txt
+-- Installing: /home/arif04/vcpkg/packages/vcpkg-cmake-get-vars_x64-linux/share/vcpkg-cmake-get-vars/cmake-get-vars.cmake.in
+-- Installing: /home/arif04/vcpkg/packages/vcpkg-cmake-get-vars_x64-linux/share/vcpkg-cmake-get-vars/vcpkg-port-config.cmake
+-- Installing: /home/arif04/vcpkg/packages/vcpkg-cmake-get-vars_x64-linux/share/vcpkg-cmake-get-vars/copyright
+-- Performing post-build validation
+Starting submission of vcpkg-cmake-get-vars:x64-linux@2025-05-29 to 1 binary cache(s) in the background
+Elapsed time to handle vcpkg-cmake-get-vars:x64-linux: 20.9 ms
+Installing 5/12 openssl:x64-linux@3.6.3...
+openssl:x64-linux@3.6.3 package ABI: fb52cf147c6b9df6bffdf0abe65fd8fa0bfc7c8b710997e2927acee83f352fe1
+Building openssl:x64-linux@3.6.3...
+Downloading https://github.com/openssl/openssl/archive/openssl-3.6.3.tar.gz -> openssl-openssl-openssl-3.6.3.tar.gz
+Successfully downloaded openssl-openssl-openssl-3.6.3.tar.gz
+-- Extracting source /home/arif04/vcpkg/downloads/openssl-openssl-openssl-3.6.3.tar.gz
+-- Applying patch cmake-config.patch
+-- Applying patch command-line-length.patch
+-- Applying patch script-prefix.patch
+-- Applying patch windows/install-layout.patch
+-- Applying patch windows/install-pdbs.patch
+-- Applying patch windows/install-programs.diff
+-- Applying patch unix/android-cc.patch
+-- Applying patch unix/move-openssldir.patch
+-- Applying patch unix/no-empty-dirs.patch
+-- Applying patch unix/no-static-libs-for-shared.patch
+-- Using source at /home/arif04/vcpkg/buildtrees/openssl/src/nssl-3.6.3-28a9d34a24.clean
+-- Getting CMake variables for x64-linux
+-- Loading CMake variables from /home/arif04/vcpkg/buildtrees/openssl/cmake-get-vars_C_CXX-x64-linux.cmake.log
+openssl requires Linux kernel headers from the system package manager.
+   They can be installed on Alpine systems via `apk add linux-headers`.
+   They can be installed on Ubuntu systems via `apt install linux-libc-dev`.
+
+-- Getting CMake variables for x64-linux-dbg
+-- Getting CMake variables for x64-linux-rel
+-- Configuring x64-linux-dbg
+-- Configuring x64-linux-rel
+-- Building x64-linux-dbg
+-- Installing x64-linux-dbg
+-- Building x64-linux-rel
+-- Installing x64-linux-rel
+-- Fixing pkgconfig file: /home/arif04/vcpkg/packages/openssl_x64-linux/lib/pkgconfig/libcrypto.pc
+-- Fixing pkgconfig file: /home/arif04/vcpkg/packages/openssl_x64-linux/lib/pkgconfig/libssl.pc
+-- Fixing pkgconfig file: /home/arif04/vcpkg/packages/openssl_x64-linux/lib/pkgconfig/openssl.pc
+-- Fixing pkgconfig file: /home/arif04/vcpkg/packages/openssl_x64-linux/debug/lib/pkgconfig/libcrypto.pc
+-- Fixing pkgconfig file: /home/arif04/vcpkg/packages/openssl_x64-linux/debug/lib/pkgconfig/libssl.pc
+-- Fixing pkgconfig file: /home/arif04/vcpkg/packages/openssl_x64-linux/debug/lib/pkgconfig/openssl.pc
+-- Installing: /home/arif04/vcpkg/packages/openssl_x64-linux/share/openssl/usage
+-- Installing: /home/arif04/vcpkg/packages/openssl_x64-linux/share/openssl/copyright
+-- Performing post-build validation
+Starting submission of openssl:x64-linux@3.6.3 to 1 binary cache(s) in the background
+Elapsed time to handle openssl:x64-linux: 2.9 min
+Completed submission of zlib:x64-linux@1.3.2#2 to 1 binary cache(s) in 60.2 ms
+Completed submission of vcpkg-cmake-get-vars:x64-linux@2025-05-29 to 1 binary cache(s) in 2.82 ms
+Installing 6/12 c-ares:x64-linux@1.34.8...
+c-ares:x64-linux@1.34.8 package ABI: 49b512bbb79fce6bf61e1cdc7c82473b07154aa98a39cf73786b4fc6bed8c0a7
+Building c-ares:x64-linux@1.34.8...
+Downloading https://github.com/c-ares/c-ares/archive/v1.34.8.tar.gz -> c-ares-c-ares-v1.34.8.tar.gz
+Successfully downloaded c-ares-c-ares-v1.34.8.tar.gz
+-- Extracting source /home/arif04/vcpkg/downloads/c-ares-c-ares-v1.34.8.tar.gz
+-- Applying patch avoid-docs.patch
+-- Using source at /home/arif04/vcpkg/buildtrees/c-ares/src/v1.34.8-6268a50809.clean
+-- Configuring x64-linux
+-- Building x64-linux-dbg
+-- Building x64-linux-rel
+-- Fixing pkgconfig file: /home/arif04/vcpkg/packages/c-ares_x64-linux/lib/pkgconfig/libcares.pc
+-- Fixing pkgconfig file: /home/arif04/vcpkg/packages/c-ares_x64-linux/debug/lib/pkgconfig/libcares.pc
+-- Installing: /home/arif04/vcpkg/packages/c-ares_x64-linux/share/c-ares/usage
+-- Installing: /home/arif04/vcpkg/packages/c-ares_x64-linux/share/c-ares/copyright
+-- Performing post-build validation
+Starting submission of c-ares:x64-linux@1.34.8 to 1 binary cache(s) in the background
+Elapsed time to handle c-ares:x64-linux: 47 s
+Completed submission of openssl:x64-linux@3.6.3 to 1 binary cache(s) in 2.5 s
+Installing 7/12 trantor:x64-linux@1.5.28...
+trantor:x64-linux@1.5.28 package ABI: d92dcb81c416a03c0471aeaa5ecea87f16ff3e23f5109adec814c8c91fd98834
+Building trantor:x64-linux@1.5.28...
+Downloading https://github.com/an-tao/trantor/archive/v1.5.28.tar.gz -> an-tao-trantor-v1.5.28.tar.gz
+Successfully downloaded an-tao-trantor-v1.5.28.tar.gz
+-- Extracting source /home/arif04/vcpkg/downloads/an-tao-trantor-v1.5.28.tar.gz
+-- Applying patch 000-fix-deps.patch
+-- Applying patch 001-disable-werror.patch
+-- Using source at /home/arif04/vcpkg/buildtrees/trantor/src/v1.5.28-14142545e4.clean
+-- Configuring x64-linux
+-- Building x64-linux-dbg
+-- Building x64-linux-rel
+-- Installing: /home/arif04/vcpkg/packages/trantor_x64-linux/share/trantor/copyright
+-- Performing post-build validation
+Starting submission of trantor:x64-linux@1.5.28 to 1 binary cache(s) in the background
+Elapsed time to handle trantor:x64-linux: 35 s
+Completed submission of c-ares:x64-linux@1.34.8 to 1 binary cache(s) in 117 ms
+Installing 8/12 libuuid:x64-linux@1.0.3#17...
+libuuid:x64-linux@1.0.3#17 package ABI: fae10096eb4b691e96163bd2b79bb8573e1d92a0e2da1b88ff35c19353559a7e
+Building libuuid:x64-linux@1.0.3#17...
+Downloading libuuid-1.0.3.tar.gz, trying https://sourceforge.net/projects/libuuid/files/libuuid-1.0.3.tar.gz/download
+Successfully downloaded libuuid-1.0.3.tar.gz
+-- Extracting source /home/arif04/vcpkg/downloads/libuuid-1.0.3.tar.gz
+-- Applying patch fix-usleep-with-nanosleep.patch
+-- Using source at /home/arif04/vcpkg/buildtrees/libuuid/src/-815c475fa6.clean
+-- Configuring x64-linux
+-- Building x64-linux-dbg
+-- Building x64-linux-rel
+-- Installing: /home/arif04/vcpkg/packages/libuuid_x64-linux/lib/pkgconfig/uuid.pc
+-- Installing: /home/arif04/vcpkg/packages/libuuid_x64-linux/debug/lib/pkgconfig/uuid.pc
+-- Fixing pkgconfig file: /home/arif04/vcpkg/packages/libuuid_x64-linux/lib/pkgconfig/uuid.pc
+-- Fixing pkgconfig file: /home/arif04/vcpkg/packages/libuuid_x64-linux/debug/lib/pkgconfig/uuid.pc
+-- Installing: /home/arif04/vcpkg/packages/libuuid_x64-linux/share/libuuid/copyright
+-- Performing post-build validation
+Starting submission of libuuid:x64-linux@1.0.3#17 to 1 binary cache(s) in the background
+Elapsed time to handle libuuid:x64-linux: 9.2 s
+Completed submission of trantor:x64-linux@1.5.28 to 1 binary cache(s) in 799 ms
+Installing 9/12 jsoncpp:x64-linux@1.9.6...
+jsoncpp:x64-linux@1.9.6 package ABI: c8a8a2f7c6c0a2b06cea6bcc6dce6045d1a5906c54f0289fb537e49246eaca14
+Building jsoncpp:x64-linux@1.9.6...
+Downloading https://github.com/open-source-parsers/jsoncpp/archive/1.9.6.tar.gz -> open-source-parsers-jsoncpp-1.9.6.tar.gz
+Successfully downloaded open-source-parsers-jsoncpp-1.9.6.tar.gz
+-- Extracting source /home/arif04/vcpkg/downloads/open-source-parsers-jsoncpp-1.9.6.tar.gz
+-- Using source at /home/arif04/vcpkg/buildtrees/jsoncpp/src/1.9.6-29ceffc35f.clean
+-- Configuring x64-linux
+-- Building x64-linux-dbg
+-- Building x64-linux-rel
+-- Fixing pkgconfig file: /home/arif04/vcpkg/packages/jsoncpp_x64-linux/lib/pkgconfig/jsoncpp.pc
+-- Fixing pkgconfig file: /home/arif04/vcpkg/packages/jsoncpp_x64-linux/debug/lib/pkgconfig/jsoncpp.pc
+-- Installing: /home/arif04/vcpkg/packages/jsoncpp_x64-linux/share/jsoncpp/copyright
+-- Performing post-build validation
+Starting submission of jsoncpp:x64-linux@1.9.6 to 1 binary cache(s) in the background
+Elapsed time to handle jsoncpp:x64-linux: 11 s
+Completed submission of libuuid:x64-linux@1.0.3#17 to 1 binary cache(s) in 6.83 ms
+Installing 10/12 brotli:x64-linux@1.2.0...
+brotli:x64-linux@1.2.0 package ABI: 4a5bafb9d7b66c95264b417f1c4f9faa9e29821626251f3bbccc6d46b7ffdce9
+Building brotli:x64-linux@1.2.0...
+Downloading https://github.com/google/brotli/archive/v1.2.0.tar.gz -> google-brotli-v1.2.0.tar.gz
+Successfully downloaded google-brotli-v1.2.0.tar.gz
+-- Extracting source /home/arif04/vcpkg/downloads/google-brotli-v1.2.0.tar.gz
+-- Applying patch install.patch
+-- Applying patch pkgconfig.patch
+-- Using source at /home/arif04/vcpkg/buildtrees/brotli/src/v1.2.0-7af7ca71ad.clean
+-- Configuring x64-linux
+-- Building x64-linux-dbg
+-- Building x64-linux-rel
+-- Fixing pkgconfig file: /home/arif04/vcpkg/packages/brotli_x64-linux/lib/pkgconfig/libbrotlicommon.pc
+-- Fixing pkgconfig file: /home/arif04/vcpkg/packages/brotli_x64-linux/lib/pkgconfig/libbrotlidec.pc
+-- Fixing pkgconfig file: /home/arif04/vcpkg/packages/brotli_x64-linux/lib/pkgconfig/libbrotlienc.pc
+-- Fixing pkgconfig file: /home/arif04/vcpkg/packages/brotli_x64-linux/debug/lib/pkgconfig/libbrotlicommon.pc
+-- Fixing pkgconfig file: /home/arif04/vcpkg/packages/brotli_x64-linux/debug/lib/pkgconfig/libbrotlidec.pc
+-- Fixing pkgconfig file: /home/arif04/vcpkg/packages/brotli_x64-linux/debug/lib/pkgconfig/libbrotlienc.pc
+-- Installing: /home/arif04/vcpkg/packages/brotli_x64-linux/share/brotli/usage
+-- Installing: /home/arif04/vcpkg/packages/brotli_x64-linux/share/brotli/copyright
+-- Adjusted RPATH of '/home/arif04/vcpkg/packages/brotli_x64-linux/tools/brotli/brotli' (From '' -> To '$ORIGIN:$ORIGIN/../../lib')
+-- Performing post-build validation
+Starting submission of brotli:x64-linux@1.2.0 to 1 binary cache(s) in the background
+Elapsed time to handle brotli:x64-linux: 20 s
+Completed submission of jsoncpp:x64-linux@1.9.6 to 1 binary cache(s) in 149 ms
+Installing 11/12 drogon:x64-linux@1.9.13#2...
+drogon:x64-linux@1.9.13#2 package ABI: 1f851e8d01447a6c6ef51a8dd67e946dc4e75a23c1b2bf51a55e2d0d4b58a66c
+Building drogon:x64-linux@1.9.13#2...
+Downloading https://github.com/drogonframework/drogon/archive/v1.9.13.tar.gz -> drogonframework-drogon-v1.9.13.tar.gz
+Successfully downloaded drogonframework-drogon-v1.9.13.tar.gz
+-- Extracting source /home/arif04/vcpkg/downloads/drogonframework-drogon-v1.9.13.tar.gz
+-- Applying patch 0001-vcpkg.patch
+-- Applying patch 0002-drogon-config.patch
+-- Applying patch 0003-deps-redis.patch
+-- Applying patch 0004-drogon-ctl.patch
+-- Applying patch 0005-fix-1.9.13-chunked-encoding-close-connection.patch
+-- Using source at /home/arif04/vcpkg/buildtrees/drogon/src/v1.9.13-cca05d91e5.clean
+-- Configuring x64-linux-dbg
+-- Configuring x64-linux-rel
+-- Building x64-linux-dbg
+-- Building x64-linux-rel
+-- Installing: /home/arif04/vcpkg/packages/drogon_x64-linux/share/drogon/usage
+-- Performing post-build validation
+Starting submission of drogon:x64-linux@1.9.13#2 to 1 binary cache(s) in the background
+Elapsed time to handle drogon:x64-linux: 3.1 min
+Completed submission of brotli:x64-linux@1.2.0 to 1 binary cache(s) in 225 ms
+Installing 12/12 nlohmann-json:x64-linux@3.12.0#2...
+nlohmann-json:x64-linux@3.12.0#2 package ABI: 43168caf4dee579b9386908a70fb1d5772bf61b64ca109093edac37ef18517a4
+Building nlohmann-json:x64-linux@3.12.0#2...
+Downloading https://github.com/nlohmann/json/archive/v3.12.0.tar.gz -> nlohmann-json-v3.12.0.tar.gz
+Successfully downloaded nlohmann-json-v3.12.0.tar.gz
+-- Extracting source /home/arif04/vcpkg/downloads/nlohmann-json-v3.12.0.tar.gz
+-- Applying patch fix-4736_char8_t.patch
+-- Applying patch fix-4742_std_optional.patch
+-- Using source at /home/arif04/vcpkg/buildtrees/nlohmann-json/src/v3.12.0-89fed620e6.clean
+-- Configuring x64-linux
+-- Building x64-linux-dbg
+-- Building x64-linux-rel
+-- Fixing pkgconfig file: /home/arif04/vcpkg/packages/nlohmann-json_x64-linux/share/pkgconfig/nlohmann_json.pc
+-- Fixing pkgconfig file: /home/arif04/vcpkg/packages/nlohmann-json_x64-linux/debug/share/pkgconfig/nlohmann_json.pc
+-- Installing: /home/arif04/vcpkg/packages/nlohmann-json_x64-linux/share/nlohmann-json/copyright
+-- Performing post-build validation
+Starting submission of nlohmann-json:x64-linux@3.12.0#2 to 1 binary cache(s) in the background
+Elapsed time to handle nlohmann-json:x64-linux: 5.8 s
+Installed contents are licensed to you by owners. Microsoft is not responsible for, nor does it grant any licenses to, third-party packages.
+Packages installed in this vcpkg installation declare the following licenses:
+Apache-2.0
+BSD-2-Clause
+BSD-3-Clause
+MIT
+Zlib
+The package drogon provides CMake targets:
+
+    find_package(Drogon CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE Drogon::Drogon)
+
+The package nlohmann-json provides CMake targets:
+
+    find_package(nlohmann_json CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE nlohmann_json::nlohmann_json)
+
+The package nlohmann-json can be configured to not provide implicit conversions via a custom triplet file:
+
+    set(nlohmann-json_IMPLICIT_CONVERSIONS OFF)
+
+For more information, see the docs here:
+
+    https://json.nlohmann.me/api/macros/json_use_implicit_conversions/
+
+Completed submission of drogon:x64-linux@1.9.13#2 to 1 binary cache(s) in 5.7 s
+Waiting for 1 remaining binary cache submissions...
+Completed submission of nlohmann-json:x64-linux@3.12.0#2 to 1 binary cache(s) in 23 ms (1/1)
+All requested installations completed successfully in: 8.2 min
+-- Running vcpkg install - done
+-- The CXX compiler identification is GNU 12.4.0
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+CMake Error at /home/arif04/vcpkg/scripts/buildsystems/vcpkg.cmake:939 (_find_package):
+  Could not find a package configuration file provided by "drogon" with any
+  of the following names:
+
+    drogonConfig.cmake
+    drogon-config.cmake
+
+  Add the installation prefix of "drogon" to CMAKE_PREFIX_PATH or set
+  "drogon_DIR" to a directory containing one of the above files.  If "drogon"
+  provides a separate development package or SDK, be sure it has been
+  installed.
+Call Stack (most recent call first):
+  CMakeLists.txt:7 (find_package)

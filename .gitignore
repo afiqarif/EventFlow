@@ -1,0 +1,52 @@
+# ==========================================
+# 1. Credentials & Environment Variables (DO NOT COMMIT!)
+# ==========================================
+*.env
+*.env.local
+*.json
+# Exception: Do NOT ignore your C++ package manifest files!
+!vcpkg.json
+!vcpkg-configuration.json
+!*manifest.json
+# Specifically target and block GCP service account keys
+gcp-key.json
+secrets/
+
+# ==========================================
+# 2. C++ & CMake Build Artifacts
+# ==========================================
+build/
+CMakeCache.txt
+CMakeFiles/
+CMakeSettings.json
+CMakeUserPresets.json
+*.cbp
+*.ninja
+ipch/
+
+# ==========================================
+# 3. vcpkg Dependency Directory
+# ==========================================
+vcpkg_installed/
+.vcpkg/
+
+# ==========================================
+# 4. Flutter / Dart Frontend Build Output
+# ==========================================
+frontend/build/
+frontend/.dart_tool/
+frontend/.packages
+frontend/.flutter-plugins
+frontend/.flutter-plugins-dependencies
+frontend/.metadata
+frontend/pubspec.lock
+
+# ==========================================
+# 5. IDEs and System Garbage
+# ==========================================
+.vscode/
+.idea/
+*.suo
+*.user
+.DS_Store
+Thumbs.db
