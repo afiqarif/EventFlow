@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class HomeNavBar extends StatelessWidget {
   final VoidCallback onContactPressed;
 
-  const HomeNavBar({required this.onContactPressed});
+  const HomeNavBar({super.key, required this.onContactPressed});
 
   @override
   Widget build(BuildContext context) {

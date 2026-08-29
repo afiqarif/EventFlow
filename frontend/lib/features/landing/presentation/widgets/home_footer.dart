@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class HomeFooter extends StatelessWidget {
-  const HomeFooter();
+  const HomeFooter({super.key});
 
   @override
   Widget build(BuildContext context) {

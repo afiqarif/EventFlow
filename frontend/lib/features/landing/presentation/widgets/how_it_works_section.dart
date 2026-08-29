@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class HowItWorksSection extends StatelessWidget {
-  const HowItWorksSection();
+  const HowItWorksSection({super.key});
 
   @override
   Widget build(BuildContext context) {
