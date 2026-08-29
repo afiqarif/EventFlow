@@ -23,6 +23,7 @@ CMakeUserPresets.json
 *.cbp
 *.ninja
 ipch/
+*.log
 
 # ==========================================
 # 3. vcpkg Dependency Directory

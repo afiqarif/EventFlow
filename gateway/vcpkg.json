@@ -2,7 +2,20 @@
   "name": "eventflow-gateway",
   "version-string": "1.0.0",
   "dependencies": [
-    "drogon",
-    "nlohmann-json"
+    {
+      "name": "drogon",
+      "features": [
+        "postgres"
+      ]
+    },
+    "nlohmann-json",
+    {
+      "name": "google-cloud-cpp",
+      "features": [
+        "storage",
+        "pubsub"
+      ]
+    },
+    "openssl"
   ]
 }
