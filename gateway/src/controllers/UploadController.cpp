@@ -44,6 +44,7 @@ void UploadController::getUploadUrl(
 
     // 3. Run execution logic (e.g., generate GCS signed URL using GcsSigner utility).
     // Note: This matches the "bypass upload" architecture mapped in the proposal.
+    // TODO: Change to proper GCS signer.
     std::string preSignedUrl = 
         "https://storage.googleapis.com/eventflow-ingestion/" +
         eventId + "/" +

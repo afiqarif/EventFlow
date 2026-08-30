@@ -1,8 +1,9 @@
 #include <drogon/drogon.h>
 #include <iostream>
-#include <exception> // Added for std::exception
+#include <exception>
 
-int main() {
+int main() 
+{
     std::cout << "Starting EventFlow Drogon Gateway on port 8080..." << std::endl;
 
     try
