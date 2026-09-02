@@ -1,131 +1,161 @@
-#include <iostream>
-#include <vector>
-#include <numeric>
-#include <chrono>
-
-// OpenCV Headers
-#include <opencv2/core.hpp>
-#include <opencv2/imgproc.hpp>
-
-// ONNX Runtime Headers
-#include <onnxruntime/core/session/onnxruntime_cxx_api.h>
-
-/**
- * EventFlow Worker Node - Integration Smoke Test
- * 
- * Purpose: 
- * This diagnostic utility verifies that both OpenCV and ONNX Runtime are 
- * properly linked, their dynamic libraries (shared objects) are discoverable 
- * at runtime, and their core execution environments initialize without crashing.
- * 
- * Compile this using the following CMake target:
- * 
- *   add_executable(worker_smoke_test smoke_test.cpp)
- *   target_link_libraries(worker_smoke_test PRIVATE ${OpenCV_LIBS} onnxruntime)
+/*
+ * This is a sample main.cpp to test OpenCV and TensorRT.
  */
 
-void runOpenCVSmokeTest() {
-    std::cout << "\n==================================================" << std::endl;
-    std::cout << "[STEP 1/2] Launching OpenCV Core & Image Processing Test" << std::endl;
-    std::cout << "==================================================" << std::endl;
-    std::cout << "-> OpenCV Version: " << CV_VERSION << std::endl;
+#include <opencv2/opencv.hpp>
+#include <opencv2/dnn.hpp>
+#include <NvInfer.h>
+#include <cuda_runtime_api.h>
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <iostream>
 
-    // 1. Create a synthetic canvas in memory (300x300 pixels, 3 channels RGB, initialized to black)
-    std::cout << "-> Instantiating 300x300 RGB Matrix..." << std::endl;
-    cv::Mat image = cv::Mat::zeros(300, 300, CV_8UC3);
+using namespace nvinfer1;
 
-    // 2. Perform matrix transformations (Draw a crosshair pattern representing face detection alignment)
-    std::cout << "-> Applying vector graphics (cv::line & cv::circle)..." << std::endl;
-    cv::Point center(150, 150);
-    int radius = 50;
-    
-    // Draw alignment circle (Green)
-    cv::circle(image, center, radius, cv::Scalar(0, 255, 0), 2, cv::LINE_AA);
-    // Draw target crosshairs (Blue)
-    cv::line(image, cv::Point(center.x - 70, center.y), cv::Point(center.x + 70, center.y), cv::Scalar(255, 0, 0), 1);
-    cv::line(image, cv::Point(center.x, center.y - 70), cv::Point(center.x, center.y + 70), cv::Scalar(255, 0, 0), 1);
-
-    // 3. Mathematical validation of image memory integrity
-    double nonZeroColors = cv::countNonZero(image.reshape(1)); // Flatten channels to count edited pixels
-    std::cout << "-> Validating matrix memory integrity..." << std::endl;
-    std::cout << "-> Modified pixel elements: " << nonZeroColors << " channels" << std::endl;
-
-    if (nonZeroColors > 0) {
-        std::cout << ">> OpenCV Smoke Test: SUCCESS (Image transformations completed in memory)" << std::endl;
-    } else {
-        throw std::runtime_error("OpenCV matrix remains completely blank. Allocation failed.");
+// 1. TensorRT requires a logger instance
+class Logger : public ILogger {
+    void log(Severity severity, const char* msg) noexcept override {
+        if (severity <= Severity::kWARNING) {
+            std::cout << "[TRT] " << msg << std::endl;
+        }
     }
-}
+} gLogger;
 
-void runOnnxRuntimeSmokeTest() {
-    std::cout << "\n==================================================" << std::endl;
-    std::cout << "[STEP 2/2] Launching ONNX Runtime Initialization Test" << std::endl;
-    std::cout << "==================================================" << std::endl;
+// Target the pre-compiled .engine file instead of .onnx
+const std::string engine_path = "model/yolov8n.engine"; 
+// const std::string image_path = "assets/Chamois.jpg";
 
-    // 1. Initialize the global thread-safe ORT Environment
-    std::cout << "-> Initializing Ort::Env (Global execution environment)..." << std::endl;
-    Ort::Env env(ORT_LOGGING_LEVEL_WARNING, "EventFlowSmokeTest");
-    std::cout << "-> Ort::Env successfully created." << std::endl;
+int main()
+{
+    std::string image_path;
+    std::cout << "Enter file name: ";
+    std::cin >> image_path;
+    std::cout << "\n";
 
-    // 2. Query available execution providers (CPU is always guaranteed, CUDA/TensorRT if optimized)
-    std::cout << "-> Querying compile-time execution options..." << std::endl;
-    Ort::SessionOptions sessionOptions;
-    sessionOptions.SetIntraOpNumThreads(1);
-    sessionOptions.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_ALL);
+    // 2. Load and Deserialize the TensorRT Engine
+    std::ifstream file(engine_path, std::ios::binary | std::ios::ate);
+    if (!file.good()) {
+        std::cerr << "Engine file not found. Run trtexec first!" << std::endl;
+        return -1;
+    }
+    std::streamsize size = file.tellg();
+    file.seekg(0, std::ios::beg);
+    std::vector<char> buffer(size);
+    file.read(buffer.data(), size);
+
+    IRuntime* runtime = createInferRuntime(gLogger);
+    ICudaEngine* engine = runtime->deserializeCudaEngine(buffer.data(), size);
+    IExecutionContext* context = engine->createExecutionContext();
+
+    // 3. Allocate GPU Memory & Stream
+    void* d_input;
+    void* d_output;
+    size_t input_bytes = 1 * 3 * 640 * 640 * sizeof(float);
+    size_t output_bytes = 1 * 84 * 8400 * sizeof(float);
+
+    cudaMalloc(&d_input, input_bytes);
+    cudaMalloc(&d_output, output_bytes);
     
-    std::cout << "-> Session configurations successfully registered." << std::endl;
+    cudaStream_t stream;
+    cudaStreamCreate(&stream);
 
-    // 3. Test memory allocator integration
-    std::cout << "-> Testing global allocator linkage..." << std::endl;
-    Ort::AllocatorWithDefaultOptions allocator;
+    // Bind addresses to default YOLOv8 ONNX tensor names
+    context->setTensorAddress("images", d_input);
+    context->setTensorAddress("output0", d_output);
+
+    // 4. Preprocess Image (Reusing OpenCV functionality)
+    cv::Mat image = cv::imread("assets/" + image_path);
+    if (image.empty()) return -1;
+
+    float x_factor = image.cols / 640.0f;
+    float y_factor = image.rows / 640.0f; // Fixed from image.cols
+
+    // cv::dnn::blobFromImage handles resize, RGB conversion, CHW layout, and normalization
+    cv::Mat blob = cv::dnn::blobFromImage(
+        image, 1/255.0, cv::Size(640, 640), cv::Scalar(0, 0, 0), true, false
+    );
+
+    // 5. Run TensorRT Inference
+    // Copy the contiguous blob data to the GPU
+    cudaMemcpyAsync(d_input, blob.ptr<float>(), input_bytes, cudaMemcpyHostToDevice, stream);
     
-    // Allocate dummy tensor data safely through Ort
-    size_t testElements = 512; // Matching face embedding dimension
-    size_t byteCount = testElements * sizeof(float);
-    void* rawBuffer = allocator.Alloc(byteCount);
+    // Execute asynchronous inference
+    context->enqueueV3(stream);
+
+    // Copy output back to CPU
+    std::vector<float> h_output(84 * 8400);
+    cudaMemcpyAsync(h_output.data(), d_output, output_bytes, cudaMemcpyDeviceToHost, stream);
     
-    if (rawBuffer != nullptr) {
-        std::cout << "-> Allocated " << byteCount << " bytes of tensor-aligned memory via ORT allocator." << std::endl;
-        float* floatBuffer = static_cast<float*>(rawBuffer);
-        std::fill(floatBuffer, floatBuffer + testElements, 0.5f); // Fill with dummy embedding float
+    // Block CPU until inference and transfers are complete
+    cudaStreamSynchronize(stream); 
+
+    // 6. Post-processing (Identical to original implementation)
+    // Wrap the raw float array in a cv::Mat for parsing
+    cv::Mat prediction(84, 8400, CV_32F, h_output.data());
+    cv::Mat prediction_t;
+    cv::transpose(prediction, prediction_t);
+
+    std::vector<int> class_ids;
+    std::vector<float> confidences;
+    std::vector<cv::Rect> boxes;
+
+    for (int i = 0; i < prediction_t.rows; i++)
+    {
+        float* row = prediction_t.ptr<float>(i);
+        float* classes_scores = row + 4;
+
+        cv::Mat scores(1, 80, CV_32F, classes_scores);
+        cv::Point class_id;
+        double max_class_score;
+        cv::minMaxLoc(scores, nullptr, &max_class_score, nullptr, &class_id);
+
+        if (max_class_score > 0.45)
+        {
+            float cx = row[0];
+            float cy = row[1];
+            float w = row[2];
+            float h = row[3];
+
+            int left = int((cx - 0.5 * w) * x_factor);
+            int top = int((cy - 0.5 * h) * y_factor);
+            int width = int (w * x_factor);
+            int height = int (h * y_factor);
+
+            boxes.push_back(cv::Rect(left, top, width, height));
+            confidences.push_back((float)max_class_score);
+            class_ids.push_back(class_id.x);
+        }
+    }
+
+    // 7. NMS and Drawing (Identical to original implementation)
+    std::vector<int> nms_indices;
+    cv::dnn::NMSBoxes(boxes, confidences, 0.45f, 0.50f, nms_indices);
+
+    for (int i = 0; i < nms_indices.size(); i++)
+    {
+        int idx = nms_indices[i];
+        cv::Rect box = boxes[idx];
+
+        cv::rectangle(image, box, cv::Scalar(0, 255, 0), 2);
+
+        std::string label = "Class " + std::to_string(class_ids[idx]) + " (" +
+                            std::to_string(int(confidences[idx] * 100)) + "%)";
         
-        // Free memory using the correct Ort deallocator to check allocation loop consistency
-        allocator.Free(rawBuffer);
-        std::cout << "-> Successfully deallocated tensor memory." << std::endl;
-        std::cout << ">> ONNX Runtime Smoke Test: SUCCESS (Environment initialized & allocator functional)" << std::endl;
-    } else {
-        throw std::runtime_error("ORT Default Allocator returned a null pointer.");
+        cv::putText(image, label, cv::Point(box.x, box.y - 10),
+                    cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 255, 0), 1);
     }
-}
 
-int main() {
-    auto startTime = std::chrono::high_resolution_clock::now();
-    std::cout << "=== EVENTFLOW WORKER NODE SYSTEM INTEGRATION SMOKE TEST ===" << std::endl;
+    std::string processed_image_path = "processed_" + image_path;
+    cv::imwrite("assets/" + processed_image_path, image);
 
-    try {
-        // Execute tests
-        runOpenCVSmokeTest();
-        runOnnxRuntimeSmokeTest();
+    // 8. Cleanup GPU Resources
+    cudaFree(d_input);
+    cudaFree(d_output);
+    cudaStreamDestroy(stream);
+    delete context;
+    delete engine;
+    delete runtime;
 
-        auto endTime = std::chrono::high_resolution_clock::now();
-        std::chrono::duration<double, std::milli> duration = endTime - startTime;
-
-        std::cout << "\n==================================================" << std::endl;
-        std::cout << "ALL WORKER SMOKE TESTS PASSED IN " << duration.count() << " ms!" << std::endl;
-        std::cout << "Your environment's ABI linkages are 100% correct." << std::endl;
-        std::cout << "==================================================" << std::endl;
-        return 0;
-
-    } catch (const cv::Exception& e) {
-        std::cerr << "\n!!! OPENCV RUNTIME EXCEPTION !!!" << std::endl;
-        std::cerr << "Details: " << e.what() << std::endl;
-        return 1;
-    } catch (const std::exception& e) {
-        std::cerr << "\n!!! SYSTEM OR ONNX RUNTIME EXCEPTION !!!" << std::endl;
-        std::cerr << "Details: " << e.what() << std::endl;
-        return 1;
-    } catch (...) {
-        std::cerr << "\n!!! UNHANDLED CRITICAL EXCEPTION !!!" << std::endl;
-        return 1;
-    }
+    return 0;
 }
