@@ -51,3 +51,8 @@ frontend/pubspec.lock
 *.user
 .DS_Store
 Thumbs.db
+
+# ==========================================
+#6. Virtual Enviroments
+# ==========================================
+.venv

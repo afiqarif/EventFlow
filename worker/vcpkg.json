@@ -2,8 +2,13 @@
   "name": "eventflow-worker",
   "version-string": "1.0.0",
   "dependencies": [
-    "opencv4",
-    "onnxruntime",
+    {
+      "name": "opencv",
+      "features": [
+        "jpeg",
+        "png"
+      ]
+    },
     {
       "name": "google-cloud-cpp",
       "features": [
