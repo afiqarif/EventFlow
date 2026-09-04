@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/features/homepage/presentation/pages/home_page.dart';
+import 'package:frontend/features/auth/presentation/pages/login_page.dart';
+import 'package:frontend/features/auth/presentation/pages/register_page.dart';
 
 import 'core/theme/theme.dart';
 
@@ -28,6 +30,7 @@ class EventFlowApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => const HomePage(), // Gateway / marketing landing page
+        '/login': (context) => const LoginPage(),
       },
     );
   }
