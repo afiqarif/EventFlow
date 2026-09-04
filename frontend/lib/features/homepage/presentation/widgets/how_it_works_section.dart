@@ -5,6 +5,7 @@ class HowItWorksSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final double screenWidth = MediaQuery.of(context).size.width;
     final bool isDesktop = screenWidth > 900;
 
@@ -12,12 +13,12 @@ class HowItWorksSection extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 24),
       child: Column(
         children: [
-          const Text(
+          Text(
             'How It Works',
             style: TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.w900,
-              color: Color(0xFF0F172A),
+              color: theme.colorScheme.onSurface,
             ),
           ),
           const SizedBox(height: 8),
@@ -27,7 +28,6 @@ class HowItWorksSection extends StatelessWidget {
           ),
           const SizedBox(height: 48),
 
-          // Steps layout switches from vertical list (mobile) to horizontal row (desktop)
           if (isDesktop)
             const Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -106,12 +106,15 @@ class _StepCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final accentColor = theme.colorScheme.secondary;
+
     return Card(
       elevation: 0,
-      color: Colors.white,
+      color: theme.colorScheme.surface,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: const BorderSide(color: Color(0xFFE2E8F0)),
+        side: BorderSide(color: theme.dividerColor.withValues(alpha: 0.2)),
       ),
       child: Padding(
         padding: const EdgeInsets.all(24.0),
@@ -121,7 +124,7 @@ class _StepCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Icon(icon, color: const Color(0xFF3B82F6), size: 36),
+                Icon(icon, color: accentColor, size: 36),
                 Text(
                   '0$stepNumber',
                   style: const TextStyle(
@@ -135,16 +138,19 @@ class _StepCard extends StatelessWidget {
             const SizedBox(height: 16),
             Text(
               title,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF0F172A),
+                color: theme.colorScheme.onSurface,
               ),
             ),
             const SizedBox(height: 8),
             Text(
               description,
-              style: const TextStyle(color: Color(0xFF475569), height: 1.4),
+              style: TextStyle(
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+                height: 1.4,
+              ),
             ),
           ],
         ),

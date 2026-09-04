@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/features/homepage/presentation/pages/home_page.dart';
 
+import 'core/theme/theme.dart';
+
 void main() {
   // 1. Core initializations (e.g., storage, dependencies, WebSockets) go here.
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,10 +20,9 @@ class EventFlowApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
 
       // 2. Define global themes that apply across all features
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueGrey),
-        useMaterial3: true,
-      ),
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: ThemeMode.system,
 
       // 3. Simple, explicit routing table mapping paths to imported feature pages
       initialRoute: '/',

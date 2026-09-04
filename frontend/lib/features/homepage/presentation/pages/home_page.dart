@@ -10,41 +10,44 @@ class HomePage extends StatelessWidget {
 
   // Helper method to show the contact details dialog
   void _showContactDialog(BuildContext context) {
+    final theme = Theme.of(context);
+    final primaryColor = theme.colorScheme.primary;
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Row(
+        title: Row(
           children: [
-            Icon(Icons.contact_mail, color: Colors.blueGrey),
-            SizedBox(width: 8),
-            Text('Contact EventFlow Team'),
+            Icon(Icons.contact_mail, color: primaryColor),
+            const SizedBox(width: 8),
+            const Text('Contact EventFlow Team'),
           ],
         ),
-        content: const Column(
+        content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               'Have questions about EventFlow or need support setting up your event pipeline?',
               style: TextStyle(fontSize: 14),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Row(
               children: [
-                Icon(Icons.email, size: 20, color: Colors.blueGrey),
-                SizedBox(width: 8),
-                Text(
+                Icon(Icons.email, size: 20, color: primaryColor),
+                const SizedBox(width: 8),
+                const Text(
                   'support@eventflow.app',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
               ],
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Row(
               children: [
-                Icon(Icons.school, size: 20, color: Colors.blueGrey),
-                SizedBox(width: 8),
-                Text('School of Computer Sciences, USM'),
+                Icon(Icons.school, size: 20, color: primaryColor),
+                const SizedBox(width: 8),
+                const Text('School of Computer Sciences, USM'),
               ],
             ),
           ],
@@ -52,10 +55,7 @@ class HomePage extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text(
-              'Close',
-              style: TextStyle(color: Colors.blueGrey),
-            ),
+            child: Text('Close', style: TextStyle(color: primaryColor)),
           ),
         ],
       ),
@@ -64,11 +64,9 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // We use a clean Scaffold with a SingleChildScrollView so the page wraps beautifully on any device.
+    // Pulling the scaffold background color directly from the active theme
     return Scaffold(
-      backgroundColor: const Color(
-        0xFFF8FAFC,
-      ), // Ultra-clean light-grey background
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SingleChildScrollView(
         child: Column(
           children: [

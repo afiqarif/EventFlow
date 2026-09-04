@@ -5,6 +5,8 @@ class HeroSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final accentColor = theme.colorScheme.secondary;
     final double screenWidth = MediaQuery.of(context).size.width;
     final bool isDesktop = screenWidth > 800;
 
@@ -12,7 +14,7 @@ class HeroSection extends StatelessWidget {
       width: double.infinity,
       color: const Color(
         0xFF0F172A,
-      ), // Dark Midnight background matching C++ API branding
+      ), // Intentional dark landing banner background
       padding: EdgeInsets.symmetric(
         horizontal: isDesktop ? screenWidth * 0.1 : 24,
         vertical: 64,
@@ -26,14 +28,14 @@ class HeroSection extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
-              color: const Color(0xFF3B82F6).withValues(alpha: 0.15),
+              color: accentColor.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: const Color(0xFF3B82F6), width: 1),
+              border: Border.all(color: accentColor, width: 1),
             ),
-            child: const Text(
+            child: Text(
               'AI-POWERED MEDIA DISTRIBUTION',
               style: TextStyle(
-                color: Color(0xFF60A5FA),
+                color: accentColor,
                 fontSize: 11,
                 fontWeight: FontWeight.w900,
                 letterSpacing: 1,
@@ -57,12 +59,12 @@ class HeroSection extends StatelessWidget {
           const SizedBox(height: 16),
 
           // Subtitle
-          Text(
+          const Text(
             'EventFlow automates the logistical nightmare of post-event photo delivery. '
             'Upload massive media files directly, execute dynamic watermarking, and let attendees '
             'instantly retrieve their personal memories using face-matching AI.',
-            textAlign: isDesktop ? TextAlign.center : TextAlign.left,
-            style: const TextStyle(
+            textAlign: TextAlign.left,
+            style: TextStyle(
               fontSize: 16,
               color: Color(0xFF94A3B8),
               height: 1.5,
@@ -81,7 +83,7 @@ class HeroSection extends StatelessWidget {
                 icon: const Icon(Icons.arrow_forward),
                 label: const Text('Get Started as Organizer'),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF3B82F6),
+                  backgroundColor: accentColor,
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(
                     horizontal: 24,
