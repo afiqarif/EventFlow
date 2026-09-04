@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/features/landing/presentation/pages/home_page.dart';
+import 'package:frontend/features/homepage/presentation/pages/home_page.dart';
 
 void main() {
   // 1. Core initializations (e.g., storage, dependencies, WebSockets) go here.
