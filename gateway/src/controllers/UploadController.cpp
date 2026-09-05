@@ -1,27 +1,21 @@
 #include "UploadController.h"
+#include "../utils/utils.h"
 #include <json/json.h> // Drogon uses jsoncpp natively for JSON handling
 
-using namespace drogon;
-
 void UploadController::getUploadUrl(
-    const HttpRequestPtr& req,
-    std::function<void (const HttpResponsePtr &)> && callback
+    const drogon::HttpRequestPtr& req,
+    std::function<void (const drogon::HttpResponsePtr &)> && callback
 )
 {
     // 1. Extract the JSON body safely from the incoming client request.
-    auto jsonBody = req->getJsonObject();
+    std::shared_ptr<Json::Value> jsonBody = req->getJsonObject();
 
     if (!jsonBody)
     {
-        // Fail-safe validation: return a 400 Bad Request if client payload is empty.
-        Json::Value errorRet;
-        errorRet["success"] = false;
-        errorRet["error"] = "Invalid or empty JSON body";
-
-        auto resp = HttpResponse::newHttpJsonResponse(errorRet);
-        resp->setStatusCode(k400BadRequest);
-        callback(resp);
-
+        drogon::HttpResponsePtr errorResp = utils::makeBadRequest(
+            "Invalid or empty JSON body"
+        );
+        callback(errorResp);
         return;
     }
 
@@ -31,14 +25,10 @@ void UploadController::getUploadUrl(
 
     if (eventId.empty() || filename.empty())
     {
-        Json::Value errorRet;
-        errorRet["success"] = false;
-        errorRet["error"] = "Missing required fields: eventId or filename";
-
-        auto resp = HttpResponse::newHttpJsonResponse(errorRet);
-        resp->setStatusCode(k400BadRequest);
-        callback(resp);
-
+        drogon::HttpResponsePtr errorResp = utils::makeBadRequest(
+            "Missing required field"
+        );
+        callback(errorResp);
         return;
     }
 
@@ -57,8 +47,8 @@ void UploadController::getUploadUrl(
     responseRet["uploadUrl"] = preSignedUrl;
 
     // 5. Build the HTTP response object and send it back to the event-loop thread
-    auto resp = HttpResponse::newHttpJsonResponse(responseRet);
-    resp->setStatusCode(k200OK);
+    drogon::HttpResponsePtr resp = drogon::HttpResponse::newHttpJsonResponse(responseRet);
+    resp->setStatusCode(drogon::k200OK);
 
     // Drogon transfers ownership of the response to the underlying socket channel.
     callback(resp);

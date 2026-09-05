@@ -76,7 +76,7 @@ class HomeNavBar extends StatelessWidget {
             IconButton(
               icon: Icon(Icons.login, color: onSurfaceColor),
               tooltip: 'Enter App',
-              onPressed: () => Navigator.pushNamed(context, '/dashboard'),
+              onPressed: () => Navigator.pushNamed(context, '/login'),
             ),
         ],
       ),

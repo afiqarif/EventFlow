@@ -31,6 +31,7 @@ class EventFlowApp extends StatelessWidget {
       routes: {
         '/': (context) => const HomePage(), // Gateway / marketing landing page
         '/login': (context) => const LoginPage(),
+        '/register': (context) => const RegisterPage(),
       },
     );
   }

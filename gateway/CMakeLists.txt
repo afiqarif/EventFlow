@@ -8,14 +8,6 @@ project(eventflow_gateway CXX)
 # ========================================================
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
-
-# Inject rigorous warning flags and maximize Release optimizations
-if(NOT MSVC)
-    add_compile_options(-Wall -Wextra -O3 -pthread)
-else()
-    add_compile_options(/W4 /O2)
-endif()
 
 # ========================================================
 # 2. Resolve Dependencies (Fetched via vcpkg Manifest)
