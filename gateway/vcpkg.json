@@ -16,6 +16,8 @@
         "pubsub"
       ]
     },
-    "openssl"
+    "openssl",
+    "jwt-cpp",
+    "argon2"
   ]
 }

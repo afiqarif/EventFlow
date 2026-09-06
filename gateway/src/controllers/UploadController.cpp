@@ -7,6 +7,12 @@ void UploadController::getUploadUrl(
     std::function<void (const drogon::HttpResponsePtr &)> && callback
 )
 {
+    // Required payload fields
+    std::vector<std::string> requiredFields = {
+        "email",
+        "password"
+    };
+
     // 1. Extract the JSON body safely from the incoming client request.
     std::shared_ptr<Json::Value> jsonBody = req->getJsonObject();
 
@@ -20,10 +26,11 @@ void UploadController::getUploadUrl(
     }
 
     // 2. Parse strictly-typed variables out of the JSON tree with safety fallbacks
+    utils::StringMap parsedData = utils::parseJsonString(jsonBody, requiredFields);
     std::string eventId = jsonBody->get("eventId", "").asString();
     std::string filename = jsonBody->get("filename", "").asString();
 
-    if (eventId.empty() || filename.empty())
+    if (parsedData["eventId"].empty() || parsedData["filename"].empty())
     {
         drogon::HttpResponsePtr errorResp = utils::makeBadRequest(
             "Missing required field"

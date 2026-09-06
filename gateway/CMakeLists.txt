@@ -13,6 +13,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # 2. Resolve Dependencies (Fetched via vcpkg Manifest)
 # ========================================================
 # Note: These targets map directly to the vcpkg.json dependencies we defined
+find_package(unofficial-argon2 CONFIG REQUIRED)
 find_package(Drogon REQUIRED)
 find_package(google_cloud_cpp_storage REQUIRED)
 find_package(google_cloud_cpp_pubsub REQUIRED)
@@ -23,7 +24,7 @@ find_package(OpenSSL REQUIRED)
 # 3. Source Discovery (Globbing All Src Directories)
 # ========================================================
 # Automatically scans and gathers your controllers, filters, models, and utilities
-file(GLOB_RECURSE SOURCE_FILES 
+file(GLOB_RECURSE SOURCE_FILES CONFIGURE_DEPENDS
     "src/*.cpp" 
     "src/*.cc" 
     "src/*.h"
@@ -49,6 +50,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     nlohmann_json::nlohmann_json
     OpenSSL::SSL
     OpenSSL::Crypto
+    unofficial::argon2::libargon2
 )
 
 # ========================================================
