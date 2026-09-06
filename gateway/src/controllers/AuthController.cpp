@@ -33,18 +33,10 @@ void AuthController::loginUser(
     utils::StringMap parsedData = utils::parseJsonString(jsonBody, requiredFields);
 
     // Check for missing fields or empty fields
-    for (const auto& requiredKey : requiredFields)
+    if (drogon::HttpResponsePtr errorResp = utils::validatePayload(parsedData, requiredFields))
     {
-        auto it = parsedData.find(requiredKey);
-
-        if (it == parsedData.end() || it->second.empty())
-        {
-            drogon::HttpResponsePtr errorResp = utils::makeBadRequest(
-                "Missing required field: " + requiredeKey 
-            );
-            callback(errorResp);
-            return;
-        }
+        callback(errorResp);
+        return;
     }
 
     // Password Hash
