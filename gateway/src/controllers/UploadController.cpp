@@ -28,11 +28,9 @@ void UploadController::getUploadUrl(
     // 2. Parse strictly-typed variables out of the JSON tree with safety fallbacks
     utils::StringMap parsedData = utils::parseJsonString(jsonBody, requiredFields);
 
-    if (parsedData["eventId"].empty() || parsedData["filename"].empty())
+    // Check for missing fields or empty fields
+    if (drogon::HttpResponsePtr errorResp = utils::validatePayload(parsedData, requiredFields))
     {
-        drogon::HttpResponsePtr errorResp = utils::makeBadRequest(
-            "Missing required field"
-        );
         callback(errorResp);
         return;
     }
