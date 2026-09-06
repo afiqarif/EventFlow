@@ -8,7 +8,8 @@
 
 namespace utils {
     // Utils Typedefs
-    using StringMap = std::unordered_map<std::string, std::string>;
+    using StringMap = std::unordered_map<std::string, std::string>;     // Map for parsed payload
+    using FieldList = std::vector<std::string>;                         // Vector for required field
 
 
     // Utils functions
@@ -19,6 +20,11 @@ namespace utils {
     std::unordered_map<std::string, std::string> parseJsonString(
         const std::shared_ptr<Json::Value>& jsonBody,
         const std::vector<std::string>& expectedKeys
+    );
+
+    drogon::HttpResponsePtr validatePayload(
+        const StringMap& parsedData,
+        const FieldList& requiredFields
     );
 }
 #endif

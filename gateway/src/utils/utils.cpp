@@ -67,4 +67,39 @@ namespace utils {
 
         return extractedData;
     }
+
+    drogon::HttpResponsePtr validatePayload(
+        const StringMap& parsedData,
+        const FieldList& requiredFields
+    )
+    {
+        std::vector<std::string> invalidFields;
+
+        for (const auto& requiredKey : requiredFields)
+        {
+            auto it = parsedData.find(requiredKey);
+
+            if (it == parsedData.end() || it->second.empty())
+                invalidFields.push_back(requiredKey);
+        }
+
+        if (!invalidFields.empty())
+        {
+            Json::Value errorBody;
+            errorBody["success"] = false;
+            errorBody["error"] = "Missing or empty fields:";
+
+            Json::Value fieldsArray(Json::arrayValue);
+            for (const auto& field : invalidFields)
+                fieldsArray.append(field);
+
+            errorBody["missing_fields"] = fieldsArray;
+
+            drogon::HttpResponsePtr resp = drogon::HttpResponse::newHttpJsonResponse(errorBody);
+            resp->setStatusCode(k400BadRequest);
+            return resp;
+        }
+
+        return nullptr;
+    }
 }

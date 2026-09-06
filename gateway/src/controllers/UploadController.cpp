@@ -8,7 +8,7 @@ void UploadController::getUploadUrl(
 )
 {
     // Required payload fields
-    std::vector<std::string> requiredFields = {
+    utils::FieldList requiredFields = {
         "email",
         "password"
     };
@@ -27,8 +27,6 @@ void UploadController::getUploadUrl(
 
     // 2. Parse strictly-typed variables out of the JSON tree with safety fallbacks
     utils::StringMap parsedData = utils::parseJsonString(jsonBody, requiredFields);
-    std::string eventId = jsonBody->get("eventId", "").asString();
-    std::string filename = jsonBody->get("filename", "").asString();
 
     if (parsedData["eventId"].empty() || parsedData["filename"].empty())
     {
