@@ -2,6 +2,8 @@
 #define AUTHCONTROLLER_H
 
 #include <drogon/drogon.h>
+#include <drogon/utils/coroutine.h>
+#include <drogon/orm/DbClient.h>
 
 class AuthController : public drogon::HttpController<AuthController>
 {
@@ -13,10 +15,7 @@ class AuthController : public drogon::HttpController<AuthController>
 
         METHOD_LIST_END
 
-        void loginUser(
-            const drogon::HttpRequestPtr& req,
-            std::function<void (const drogon::HttpResponsePtr &)> && callback
-        );
+        drogon::Task<drogon::HttpResponsePtr> loginUser(drogon::HttpRequestPtr req);
 
         void registerUser(
             const drogon::HttpRequestPtr& req,

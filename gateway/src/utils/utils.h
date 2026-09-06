@@ -10,10 +10,14 @@ namespace utils {
     // Utils Typedefs
     using StringMap = std::unordered_map<std::string, std::string>;     // Map for parsed payload
     using FieldList = std::vector<std::string>;                         // Vector for required field
+    using DatabaseClient = std::shared_ptr<drogon::orm::DbClient>;      // DbClient data type
 
 
     // Utils functions
-    drogon::HttpResponsePtr makeBadRequest(const std::string& errorMessage);
+    drogon::HttpResponsePtr errorRequest(
+        const std::string& errorMessage,
+        drogon::HttpStatusCode statusCode
+    );
 
     std::string hash(const std::string& password);
 

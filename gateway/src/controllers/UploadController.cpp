@@ -18,10 +18,7 @@ void UploadController::getUploadUrl(
 
     if (!jsonBody)
     {
-        drogon::HttpResponsePtr errorResp = utils::makeBadRequest(
-            "Invalid or empty JSON body"
-        );
-        callback(errorResp);
+        callback(utils::errorRequest("Invalid or empty JSON body", drogon::k400BadRequest));
         return;
     }
 
@@ -40,8 +37,8 @@ void UploadController::getUploadUrl(
     // TODO: Change to proper GCS signer.
     std::string preSignedUrl = 
         "https://storage.googleapis.com/eventflow-ingestion/" +
-        eventId + "/" +
-        filename + 
+        parsedData["eventId"] + "/" +
+        parsedData["filename"] + 
         "?GoogleAccessId=...";
 
     // 4. Formulate the response JSON payload
