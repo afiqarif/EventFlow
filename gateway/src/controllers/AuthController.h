@@ -17,10 +17,7 @@ class AuthController : public drogon::HttpController<AuthController>
 
         drogon::Task<drogon::HttpResponsePtr> loginUser(drogon::HttpRequestPtr req);
 
-        void registerUser(
-            const drogon::HttpRequestPtr& req,
-            std::function<void (const drogon::HttpResponsePtr &)> && callback
-        );
+        drogon::Task<drogon::HttpResponsePtr> registerUser(drogon::HttpRequestPtr req);
 };
 
 #endif

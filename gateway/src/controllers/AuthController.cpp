@@ -1,6 +1,7 @@
 #include "AuthController.h"
 #include "../utils/utils.h"
 #include <json/json.h>
+#include <argon2.h>
 
 drogon::Task<drogon::HttpResponsePtr> AuthController::loginUser(drogon::HttpRequestPtr req)
 {
@@ -28,9 +29,6 @@ drogon::Task<drogon::HttpResponsePtr> AuthController::loginUser(drogon::HttpRequ
     if (drogon::HttpResponsePtr errorResp = utils::validatePayload(parsedData, requiredFields))
         co_return errorResp;
 
-    // Password Hash
-    std::string hashedPwd = utils::hash(parsedData["password"]);
-
     // 2. Asynchronous Database Query using co_await
     drogon::orm::Result result = co_await DbClientPtr->execSqlCoro(
         "SELECT password_hash FROM users WHERE email = $1",
@@ -44,9 +42,10 @@ drogon::Task<drogon::HttpResponsePtr> AuthController::loginUser(drogon::HttpRequ
     const drogon::orm::Row row = result[0];
 
     std::string dbPasswordHash = row["password_hash"].as<std::string>();
-    std::string dbUserEmail = row["email"].as<std::string>();
 
-    if (hashedPwd != dbPasswordHash)
+    int pwdResult = argon2id_verify(dbPasswordHash.c_str(), parsedData["password"].c_str(), parsedData["password"].length());
+
+    if (pwdResult != ARGON2_OK)
         co_return utils::errorRequest("Wrong credentials", drogon::k401Unauthorized);
 
     // TODO: Send JWT to client
@@ -54,7 +53,7 @@ drogon::Task<drogon::HttpResponsePtr> AuthController::loginUser(drogon::HttpRequ
 
     Json::Value responseRet;
     responseRet["success"] = true;
-    responseRet["token"] = hashedPwd;
+    responseRet["token"] = token;
 
     drogon::HttpResponsePtr resp = drogon::HttpResponse::newHttpJsonResponse(responseRet);
     resp->setStatusCode(drogon::k200OK);
@@ -62,11 +61,7 @@ drogon::Task<drogon::HttpResponsePtr> AuthController::loginUser(drogon::HttpRequ
     co_return resp;
 }
 
-void AuthController::registerUser(
-    const drogon::HttpRequestPtr& req,
-    std::function<void (const drogon::HttpResponsePtr &)> && callback
-)
-{
+drogon::Task<drogon::HttpResponsePtr> AuthController::registerUser(drogon::HttpRequestPtr req) {
     // Required payload fields
     utils::FieldList requiredFields = {
         "fName", "lName",
@@ -75,28 +70,47 @@ void AuthController::registerUser(
         "password"
     };
 
-    // Database Client pointer declaration
+    // Database Client point declaration
     utils::DatabaseClient DbClientPtr = drogon::app().getDbClient("default");
 
     // Parse JSON body
     std::shared_ptr<Json::Value> jsonBody = req->getJsonObject();
 
-    // Check if JSON body is empty
+    // check if JSON body is empty
     if (!jsonBody)
-    {
-        callback(utils::errorRequest("Invalid or empty JSON body", drogon::k400BadRequest));
-        return;
-    }
+        co_return utils::errorRequest("Invalid or empty JSON body", drogon::k400BadRequest);
 
     // Parse fields
     utils::StringMap parsedData = utils::parseJsonString(jsonBody, requiredFields);
 
     // Check if fields are missing or empty
     if (drogon::HttpResponsePtr errorResp = utils::validatePayload(parsedData, requiredFields))
-    {
-        callback(errorResp);
-        return;
-    }
+        co_return errorResp;
 
+    // Hash password
     std::string hashedPwd = utils::hash(parsedData["password"]);
+
+    // Asynchronous database query
+    drogon::orm::Result result = co_await DbClientPtr->execSqlCoro(
+        "INSERT INTO users (first_name, last_name, username, email, password_hash) VALUES ($1, $2, $3, $4, $5) RETURNING *",
+        parsedData["fName"], parsedData["lName"],
+        parsedData["username"],
+        parsedData["email"],
+        hashedPwd
+    );
+
+    std::string newUserId = result[0]["id"].as<std::string>();
+
+    // TODO: JWT generation
+    std::string token = "jkandkjasnrkjehrkjana";
+
+    Json::Value responseRet;
+    responseRet["success"] = true;
+    responseRet["token"] = token;
+    responseRet["userId"] = newUserId;
+
+    drogon::HttpResponsePtr resp = drogon::HttpResponse::newHttpJsonResponse(responseRet);
+    resp->setStatusCode(drogon::k200OK);
+
+    co_return resp;
 }
