@@ -1,4 +1,4 @@
-yamlname: Build Auth Service
+name: Build Auth Service
 
 on:
   push:
