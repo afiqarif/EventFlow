@@ -4,13 +4,29 @@ services:
     container_name: eventflow_postgres
     environment:
       POSTGRES_USER: arif
-      POSTGRES_PASSWORD: password123
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: eventflow
     ports:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
       - ./database/migrations:/docker-entrypoint-initdb.d
+    restart: unless-stopped
+
+  # C++ API Gateway service
+  api-gateway:
+    build: ./gateway
+    container_name: eventflow_gateway
+    environment:
+      JWT_SECRET: ${JWT_SECRET}
+      DB_HOST: db
+      DB_USER: arif
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      DB_NAME: eventflow
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
     restart: unless-stopped
 
 volumes:

@@ -14,7 +14,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # ========================================================
 # Note: These targets map directly to the vcpkg.json dependencies we defined
 find_package(unofficial-argon2 CONFIG REQUIRED)
-find_package(Drogon REQUIRED)
+find_package(Drogon CONFIG REQUIRED)
+find_package(jwt-cpp CONFIG REQUIRED)
 find_package(google_cloud_cpp_storage REQUIRED)
 find_package(google_cloud_cpp_pubsub REQUIRED)
 find_package(nlohmann_json REQUIRED)
@@ -51,6 +52,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     OpenSSL::SSL
     OpenSSL::Crypto
     unofficial::argon2::libargon2
+    jwt-cpp::jwt-cpp
 )
 
 # ========================================================

@@ -7,8 +7,10 @@ FROM ubuntu:22.04 AS builder
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Install core build system dependencies, compilers, and vcpkg prerequisites
+# ADDED libpq-dev so vcpkg can link against native Postgres components if needed
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
+    python3 \
     g++-12 \
     gcc-12 \
     cmake \
@@ -23,6 +25,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libssl-dev \
     uuid-dev \
     zlib1g-dev \
+    libpq-dev \
+    bison \
+    flex \
+    gperf \
+    libsqlite3-dev \
+    linux-libc-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Enforce GCC-12 as the compiler to ensure robust C++20 coroutine support
@@ -31,25 +39,28 @@ ENV CXX=g++-12
 
 # Bootstrap vcpkg globally inside the builder stage
 ENV VCPKG_ROOT=/opt/vcpkg
-RUN git clone https://github.com/microsoft/vcpkg.git ${VCPKG_ROOT} \
+RUN git clone https://github.com/microsoft/vcpkg ${VCPKG_ROOT} \
     && ${VCPKG_ROOT}/bootstrap-vcpkg.sh
 
 # Set working directory inside the container
 WORKDIR /app
 
 # --- ADVANCED CACHING TRICK FOR VCPKG ---
-# Copy ONLY the manifest file first. This compiles Drogon and heavy dependencies
-# to cache them. If you change your C++ source code later, Docker will NOT
-# recompile your dependencies from scratch—saving you hours in CI/CD build times!
 COPY vcpkg.json ./
 
-# Trigger a dummy configure to force vcpkg to download and compile manifest dependencies
-RUN echo "cmake_minimum_required(VERSION 3.20)\nproject(Dummy CXX)\nfind_package(drogon CONFIG REQUIRED)" > CMakeLists.txt \
-    && cmake -B build -S . \
+# Trigger a dummy configure using a Here-Doc to correctly format CMakeLists.txt
+RUN cat <<EOF > CMakeLists.txt
+cmake_minimum_required(VERSION 3.20)
+project(Dummy CXX)
+find_package(drogon CONFIG REQUIRED)
+EOF
+
+RUN cmake -B build -S . \
        -DCMAKE_TOOLCHAIN_FILE=${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake \
        -G Ninja \
     && rm -rf build CMakeLists.txt
 # ----------------------------------------
+
 
 # Now copy the actual source code and configuration files
 COPY . .
@@ -69,10 +80,11 @@ RUN cmake --build build --target eventflow_gateway
 FROM ubuntu:22.04 AS runner
 
 # Install minimal runtime requirements
-# ca-certificates is critical for GcsSigner to make secure HTTPS cryptographic calls
+# ADDED libpq5 so your compiled C++ binary can talk to your PostgreSQL container
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     libssl3 \
+    libpq5 \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app

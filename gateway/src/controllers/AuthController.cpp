@@ -49,7 +49,7 @@ drogon::Task<drogon::HttpResponsePtr> AuthController::loginUser(drogon::HttpRequ
         co_return utils::errorRequest("Wrong credentials", drogon::k401Unauthorized);
 
     // TODO: Send JWT to client
-    std::string token = "mvjFSDKjfs13564mklKJSFS432JKFJrfyreu";
+    std::string token = "jkajfkahjfsdkjfhsdkjfds";
 
     Json::Value responseRet;
     responseRet["success"] = true;
