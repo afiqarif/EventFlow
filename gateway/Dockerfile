@@ -52,7 +52,6 @@ COPY vcpkg.json ./
 RUN cat <<EOF > CMakeLists.txt
 cmake_minimum_required(VERSION 3.20)
 project(Dummy CXX)
-find_package(drogon CONFIG REQUIRED)
 EOF
 
 RUN cmake -B build -S . \
