@@ -5,7 +5,7 @@
 #include <drogon/drogon.h>
 #include <unordered_map>
 #include <vector>
-#include <jtw-cpp/jwt.h>
+#include <jwt-cpp/jwt.h>
 #include <chrono>
 
 namespace utils {
