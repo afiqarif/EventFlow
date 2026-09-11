@@ -3,6 +3,19 @@ cmake_minimum_required(VERSION 3.20)
 # Set the project name and declare it as C++
 project(eventflow_gateway CXX)
 
+# Inject .env into environment
+set(ENV_FILE "${CMAKE_CURRENT_SOURCE_DIR}/../.env")
+if(EXISTS ${ENV_FILE})
+    message(STATUS "Found .env file at ${ENV_FILE}. Injecting variables...")
+    file(STRINGS ${ENV_FILE} ConfigContents)
+    foreach(line ${ConfigContents})
+        if(NOT line MATCHES "^#" AND line MATCHES "=")
+            string(REGEX MATCH "^([^=]+)=(.*)$" _ ${line})
+            set(ENV{${CMAKE_MATCH_1}} ${CMAKE_MATCH_2})
+        endif()
+    endforeach()
+endif()
+
 # ========================================================
 # 1. Compiler Configuration (Enforcing C++20 & Optimizations)
 # ========================================================

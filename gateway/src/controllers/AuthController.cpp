@@ -31,7 +31,7 @@ drogon::Task<drogon::HttpResponsePtr> AuthController::loginUser(drogon::HttpRequ
 
     // 2. Asynchronous Database Query using co_await
     drogon::orm::Result result = co_await DbClientPtr->execSqlCoro(
-        "SELECT password_hash FROM users WHERE email = $1",
+        "SELECT id, password_hash FROM users WHERE email = $1",
         parsedData["email"]
     );
     // Check if any row was found
@@ -42,6 +42,7 @@ drogon::Task<drogon::HttpResponsePtr> AuthController::loginUser(drogon::HttpRequ
     const drogon::orm::Row row = result[0];
 
     std::string dbPasswordHash = row["password_hash"].as<std::string>();
+    std::string dbUserId = row["id"].as<std::string>();
 
     int pwdResult = argon2id_verify(dbPasswordHash.c_str(), parsedData["password"].c_str(), parsedData["password"].length());
 
@@ -49,7 +50,7 @@ drogon::Task<drogon::HttpResponsePtr> AuthController::loginUser(drogon::HttpRequ
         co_return utils::errorRequest("Wrong credentials", drogon::k401Unauthorized);
 
     // TODO: Send JWT to client
-    std::string token = "jkajfkahjfsdkjfhsdkjfds";
+    std::string token = utils::generateToken(dbUserId, "user", std::getenv("JWT_SECRET"));
 
     Json::Value responseRet;
     responseRet["success"] = true;
