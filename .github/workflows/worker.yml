@@ -29,7 +29,21 @@ jobs:
           username: ${{ github.actor }} 
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and Push Docker Image
+      # Step A: Build and export cache
+      - name: Build and Cache Docker Image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./worker
+          file: ./worker/Dockerfile
+          push: false 
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/worker-service:latest
+            ghcr.io/${{ github.repository_owner }}/worker-service:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # Step B: Push the pre-built image
+      - name: Push Docker Image
         uses: docker/build-push-action@v6
         with:
           context: ./worker
@@ -39,4 +53,3 @@ jobs:
             ghcr.io/${{ github.repository_owner }}/worker-service:latest
             ghcr.io/${{ github.repository_owner }}/worker-service:${{ github.sha }}
           cache-from: type=gha
-          cache-to: type=gha,mode=max
