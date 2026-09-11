@@ -4,6 +4,7 @@
 *.env
 *.env.local
 *.json
+!config.template.json
 # Exception: Do NOT ignore your C++ package manifest files!
 !vcpkg.json
 !vcpkg-configuration.json

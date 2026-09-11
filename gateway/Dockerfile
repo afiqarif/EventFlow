@@ -7,7 +7,6 @@ FROM ubuntu:22.04 AS builder
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Install core build system dependencies, compilers, and vcpkg prerequisites
-# ADDED libpq-dev so vcpkg can link against native Postgres components if needed
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     python3 \
@@ -79,7 +78,6 @@ RUN cmake --build build --target eventflow_gateway
 FROM ubuntu:22.04 AS runner
 
 # Install minimal runtime requirements
-# ADDED libpq5 so your compiled C++ binary can talk to your PostgreSQL container
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     libssl3 \
@@ -91,11 +89,17 @@ WORKDIR /app
 # Copy ONLY the final binary from the builder environment
 COPY --from=builder /app/build/eventflow_gateway ./eventflow_gateway
 
-# Copy the server configuration file
-COPY --from=builder /app/config.json ./config.json
+# Copy config template into the container
+COPY config.template.json /app/config.template.json
+
+# Copy entrypoint script into container
+COPY entrypoint.sh /app/entrypoint.sh
+
+# Grant execution permission to the script inside Linux
+RUN chmod +x /app/entrypoint.sh
 
 # Expose port 8080 (Cloud Run default target port)
 EXPOSE 8080
 
 # Execute the gateway
-CMD ["./eventflow_gateway"]
+ENTRYPOINT [ "/app/entrypoint.sh" ]

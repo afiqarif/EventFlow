@@ -67,16 +67,3 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     unofficial::argon2::libargon2
     jwt-cpp::jwt-cpp
 )
-
-# ========================================================
-# 6. Quality-of-Life Helper for Local Testing
-# ========================================================
-# This post-build step automatically copies your config.json next to your compiled 
-# executable. That way, when you run your binary locally, Drogon can find its 
-# configuration file instantly without you having to manually move files!
-add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-    "${CMAKE_CURRENT_SOURCE_DIR}/config.json"
-    "$<TARGET_FILE_DIR:${PROJECT_NAME}>/config.json"
-    COMMENT "Copying config.json to build target directory..."
-)
