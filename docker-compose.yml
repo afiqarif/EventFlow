@@ -15,7 +15,8 @@ services:
 
   # C++ API Gateway service
   api-gateway:
-    build: ./gateway
+    # build: ./gateway
+    image:  ghcr.io/afiqarif/gateway-service:deff3baab0dab83340c93bb9c6bffac07d37ce5c
     container_name: eventflow_gateway
     environment:
       JWT_SECRET: ${JWT_SECRET}
@@ -25,6 +26,10 @@ services:
       DB_NAME: eventflow
     ports:
       - "8080:8080"
+    volumes:
+      - ./gateway/config.template.json:/app/config.template.json
+      - ./gateway/entrypoint.sh:/app/entrypoint.sh
+      - ./gateway/logs:/app/logs
     depends_on:
       - db
     restart: unless-stopped
